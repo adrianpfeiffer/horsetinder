@@ -13,7 +13,8 @@ beforeEach(function () {
 it('creates an admin who can log in with the default password', function () {
     $admin = User::firstWhere('email', 'admin@admin.com');
 
-    expect(Hash::check('password', $admin->password))->toBeTrue();
+    expect($admin->isAdmin())->toBeTrue()
+        ->and(Hash::check('password', $admin->password))->toBeTrue();
 });
 
 it('creates 8 breeds', function () {
@@ -21,7 +22,7 @@ it('creates 8 breeds', function () {
 });
 
 it('creates 10 owners with 1 to 3 horses each', function () {
-    $owners = User::where('email', '!=', 'admin@admin.com')->withCount('horses')->get();
+    $owners = User::where('role', 'user')->withCount('horses')->get();
 
     expect($owners)->toHaveCount(10)
         ->and($owners->pluck('horses_count'))->each->toBeGreaterThanOrEqual(1)->toBeLessThanOrEqual(3);
