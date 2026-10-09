@@ -17,7 +17,6 @@ Route::get('/', WelcomeController::class)->name('welcome');
  */
 require __DIR__.'/auth.php';
 
-
 /*
  * Userzone routes
  */
