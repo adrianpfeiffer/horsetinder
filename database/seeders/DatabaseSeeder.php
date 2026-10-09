@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Breed;
+use App\Models\Horse;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,8 +22,17 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@admin.com',
         ]);
 
-        Breed::factory(8)->create();
+        $breeds = Breed::factory(8)->create();
 
-        // TODO: seed owners with horses
+        $owners = User::factory(10)->create();
+
+        foreach ($owners as $owner) {
+            Horse::factory(fake()->numberBetween(1, 3))
+                ->for($owner, 'owner')
+                ->recycle($breeds)
+                ->create();
+        }
+
+        // TODO: seed likes between horses
     }
 }
