@@ -6,6 +6,7 @@ use Database\Factories\HorseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Horse extends Model
 {
@@ -64,5 +65,25 @@ class Horse extends Model
     public function breed(): BelongsTo
     {
         return $this->belongsTo(Breed::class);
+    }
+
+    /**
+     * The likes this horse has given to other horses.
+     *
+     * @return HasMany<Like, $this>
+     */
+    public function givenLikes(): HasMany
+    {
+        return $this->hasMany(Like::class, 'horse_id');
+    }
+
+    /**
+     * The likes this horse has received from other horses.
+     *
+     * @return HasMany<Like, $this>
+     */
+    public function receivedLikes(): HasMany
+    {
+        return $this->hasMany(Like::class, 'target_horse_id');
     }
 }
