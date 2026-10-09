@@ -57,4 +57,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Horse::class);
     }
+
+    /**
+     * Determine whether the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }
