@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Breed;
+use App\Models\Like;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Hash;
@@ -24,4 +25,8 @@ it('creates 10 owners with 1 to 3 horses each', function () {
 
     expect($owners)->toHaveCount(10)
         ->and($owners->pluck('horses_count'))->each->toBeGreaterThanOrEqual(1)->toBeLessThanOrEqual(3);
+});
+
+it('never lets a horse like itself', function () {
+    expect(Like::whereColumn('horse_id', 'target_horse_id')->exists())->toBeFalse();
 });
