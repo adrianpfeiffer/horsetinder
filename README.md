@@ -29,7 +29,7 @@ php artisan storage:link
 | Admin | `admin@admin.com` | `password` |
 | Owners | random emails, see **Admin → Manage horses** | `password` |
 
-The seeder creates the admin, 8 breeds, 10 owners with 1–3 horses each, and random likes, including some mutual ones so there are matches to show.
+The seeder creates the admin with 2 horses, 8 breeds, 10 owners with 1–3 horses each, and random likes, including some mutual ones so there are matches to show. The admin always has at least one match and one like to answer, so you can try liking back right away.
 
 ## What you can do
 
