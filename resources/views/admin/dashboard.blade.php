@@ -16,10 +16,14 @@
                 @endforeach
             </div>
 
-            <div class="mt-8">
-                <a href="{{ route('admin.breeds.index') }}" class="block rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 sm:max-w-sm">
+            <div class="mt-8 grid gap-4 sm:grid-cols-2">
+                <a href="{{ route('admin.breeds.index') }}" class="block rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50">
                     <p class="font-semibold text-gray-900">Manage breeds →</p>
                     <p class="mt-1 text-sm text-gray-500">Add, edit and delete the breeds owners can choose from.</p>
+                </a>
+                <a href="{{ route('admin.horses.index') }}" class="block rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50">
+                    <p class="font-semibold text-gray-900">Manage horses →</p>
+                    <p class="mt-1 text-sm text-gray-500">See all horse profiles, also hidden ones, and remove them.</p>
                 </a>
             </div>
         </div>

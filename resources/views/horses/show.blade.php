@@ -21,7 +21,7 @@
 
             @unless ($horse->is_active)
                 <p class="mb-6 rounded-md bg-yellow-50 p-4 text-sm text-yellow-800">
-                    This horse is hidden. Only you can see this profile.
+                    This horse is hidden from browsing. Only its owner and admins can see this profile.
                 </p>
             @endunless
 

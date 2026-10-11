@@ -8,7 +8,6 @@ use App\Models\Breed;
 use App\Models\Horse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class MyHorseController extends Controller
@@ -75,7 +74,7 @@ class MyHorseController extends Controller
         $data = $request->safe()->except('photo');
 
         if ($request->hasFile('photo')) {
-            $this->deletePhoto($horse);
+            $horse->deletePhoto();
             $data['photo_path'] = $request->file('photo')->store('horses', 'public');
         }
 
@@ -92,21 +91,11 @@ class MyHorseController extends Controller
     {
         $this->ensureOwnedBy($request, $horse);
 
-        $this->deletePhoto($horse);
+        $horse->deletePhoto();
         $horse->delete();
 
         return redirect()->route('my.horses.index')
             ->with('status', "{$horse->name} was deleted.");
-    }
-
-    /**
-     * Remove the horse's photo file from storage, if it has one.
-     */
-    private function deletePhoto(Horse $horse): void
-    {
-        if ($horse->photo_path) {
-            Storage::disk('public')->delete($horse->photo_path);
-        }
     }
 
     /**
