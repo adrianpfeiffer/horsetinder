@@ -8,6 +8,7 @@ use App\Models\Breed;
 use App\Models\Horse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class MyHorseController extends Controller
@@ -40,7 +41,13 @@ class MyHorseController extends Controller
      */
     public function store(HorseRequest $request): RedirectResponse
     {
-        $horse = $request->user()->horses()->create($request->validated());
+        $data = $request->safe()->except('photo');
+
+        if ($request->hasFile('photo')) {
+            $data['photo_path'] = $request->file('photo')->store('horses', 'public');
+        }
+
+        $horse = $request->user()->horses()->create($data);
 
         return redirect()->route('my.horses.index')
             ->with('status', "{$horse->name} was added.");
@@ -65,7 +72,14 @@ class MyHorseController extends Controller
     {
         $this->ensureOwnedBy($request, $horse);
 
-        $horse->update($request->validated());
+        $data = $request->safe()->except('photo');
+
+        if ($request->hasFile('photo')) {
+            $this->deletePhoto($horse);
+            $data['photo_path'] = $request->file('photo')->store('horses', 'public');
+        }
+
+        $horse->update($data);
 
         return redirect()->route('my.horses.index')
             ->with('status', "{$horse->name} was updated.");
@@ -78,10 +92,21 @@ class MyHorseController extends Controller
     {
         $this->ensureOwnedBy($request, $horse);
 
+        $this->deletePhoto($horse);
         $horse->delete();
 
         return redirect()->route('my.horses.index')
             ->with('status', "{$horse->name} was deleted.");
+    }
+
+    /**
+     * Remove the horse's photo file from storage, if it has one.
+     */
+    private function deletePhoto(Horse $horse): void
+    {
+        if ($horse->photo_path) {
+            Storage::disk('public')->delete($horse->photo_path);
+        }
     }
 
     /**
