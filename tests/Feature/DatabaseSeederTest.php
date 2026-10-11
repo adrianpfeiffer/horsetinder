@@ -31,3 +31,13 @@ it('creates 10 owners with 1 to 3 horses each', function () {
 it('never lets a horse like itself', function () {
     expect(Like::whereColumn('horse_id', 'target_horse_id')->exists())->toBeFalse();
 });
+
+it('creates mutual likes so there are matches to show', function () {
+    $hasMatch = Like::whereExists(function ($query) {
+        $query->from('likes as back')
+            ->whereColumn('back.horse_id', 'likes.target_horse_id')
+            ->whereColumn('back.target_horse_id', 'likes.horse_id');
+    })->exists();
+
+    expect($hasMatch)->toBeTrue();
+});
