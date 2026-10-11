@@ -28,6 +28,11 @@
                         <x-breeze.nav-link :href="route('matches.index')" :active="request()->routeIs('matches.*')">
                             Matches
                         </x-breeze.nav-link>
+                        @if (Auth::user()->isAdmin())
+                            <x-breeze.nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                                Admin
+                            </x-breeze.nav-link>
+                        @endif
                     @endauth
                 </div>
             </div>
@@ -105,6 +110,11 @@ Log Out
                 <x-breeze.responsive-nav-link :href="route('matches.index')" :active="request()->routeIs('matches.*')">
                     Matches
                 </x-breeze.responsive-nav-link>
+                @if (Auth::user()->isAdmin())
+                    <x-breeze.responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                        Admin
+                    </x-breeze.responsive-nav-link>
+                @endif
             @endauth
         </div>
 
