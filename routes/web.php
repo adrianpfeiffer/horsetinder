@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\HorseController as AdminHorseController;
 use App\Http\Controllers\BreedController;
 use App\Http\Controllers\HorseController;
-use App\Http\Controllers\Userzone\DashboardController;
 use App\Http\Controllers\Userzone\LikeController;
 use App\Http\Controllers\Userzone\MatchController;
 use App\Http\Controllers\Userzone\MyHorseController;
@@ -17,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 /*
  * Public Website routes
  */
-Route::get('/', WelcomeController::class)->name('welcome');
+Route::get('/', WelcomeController::class)->name('home');
 
 Route::get('/horses', [HorseController::class, 'index'])->name('horses.index');
 Route::get('/horses/{horse}', [HorseController::class, 'show'])->name('horses.show');
@@ -34,9 +33,6 @@ require __DIR__.'/auth.php';
  * Userzone routes
  */
 Route::middleware('auth')->group(function () {
-    // For the user's dashboard (after login)
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
-
     // For the user's own horses
     Route::get('/my/horses', [MyHorseController::class, 'index'])->name('my.horses.index');
     Route::get('/my/horses/create', [MyHorseController::class, 'create'])->name('my.horses.create');

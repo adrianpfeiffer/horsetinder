@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('welcome') }}">
+                    <a href="{{ route('home') }}">
                         <x-breeze.application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
@@ -22,9 +22,6 @@
                         About
                     </x-breeze.nav-link>
                     @auth
-                        <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            Dashboard
-                        </x-breeze.nav-link>
                         <x-breeze.nav-link :href="route('my.horses.index')" :active="request()->routeIs('my.horses.*')">
                             My horses
                         </x-breeze.nav-link>
@@ -107,9 +104,6 @@ Log Out
                 About
             </x-breeze.responsive-nav-link>
             @auth
-                <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    Dashboard
-                </x-breeze.responsive-nav-link>
                 <x-breeze.responsive-nav-link :href="route('my.horses.index')" :active="request()->routeIs('my.horses.*')">
                     My horses
                 </x-breeze.responsive-nav-link>
