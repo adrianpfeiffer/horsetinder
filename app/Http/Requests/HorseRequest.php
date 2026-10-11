@@ -24,6 +24,7 @@ class HorseRequest extends FormRequest
             'discipline' => ['required', Rule::in(Horse::DISCIPLINES)],
             'city' => ['required', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:1000'],
+            'is_active' => ['boolean'],
         ];
     }
 

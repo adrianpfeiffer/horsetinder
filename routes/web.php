@@ -34,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/my/horses', [MyHorseController::class, 'index'])->name('my.horses.index');
     Route::get('/my/horses/create', [MyHorseController::class, 'create'])->name('my.horses.create');
     Route::post('/my/horses', [MyHorseController::class, 'store'])->name('my.horses.store');
+    Route::get('/my/horses/{horse}/edit', [MyHorseController::class, 'edit'])->name('my.horses.edit');
+    Route::put('/my/horses/{horse}', [MyHorseController::class, 'update'])->name('my.horses.update');
+    Route::delete('/my/horses/{horse}', [MyHorseController::class, 'destroy'])->name('my.horses.destroy');
 
     // For the user's profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
