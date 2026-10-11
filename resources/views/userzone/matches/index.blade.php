@@ -17,7 +17,7 @@
             @else
                 <div class="space-y-4">
                     @foreach ($matches as $match)
-                        <div class="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5 sm:flex-row sm:items-center">
+                        <div id="match-{{ $match->horse_id }}-{{ $match->target_horse_id }}" class="flex scroll-mt-24 flex-col gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5 target:bg-pink-50 target:ring-2 target:ring-pink-500 sm:flex-row sm:items-center">
                             <div class="flex items-center gap-3">
                                 <a href="{{ route('horses.show', $match->horse) }}">
                                     <x-horse-photo :horse="$match->horse" class="size-16 rounded-full text-3xl" />

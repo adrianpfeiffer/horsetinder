@@ -20,7 +20,9 @@ describe('store', function () {
 
         $response = $this->actingAs($myHorse->owner)->post(route('likes.store', $target), ['horse_id' => $myHorse->id]);
 
-        $response->assertRedirect(route('horses.show', $target))->assertSessionHas('status', 'You liked Luna.');
+        $response->assertRedirect(route('horses.show', $target))
+            ->assertSessionHas('status', 'You liked Luna.')
+            ->assertSessionMissing('matched_horse_id');
         $this->assertDatabaseHas('likes', ['horse_id' => $myHorse->id, 'target_horse_id' => $target->id]);
     });
 
@@ -31,7 +33,8 @@ describe('store', function () {
 
         $response = $this->actingAs($myHorse->owner)->post(route('likes.store', $target), ['horse_id' => $myHorse->id]);
 
-        $response->assertSessionHas('status', "It's a match with Luna! 🎉");
+        $response->assertSessionHas('status', "It's a match with Luna! 🎉")
+            ->assertSessionHas('matched_horse_id', $myHorse->id);
     });
 
     it('rejects liking with a horse of another owner', function () {

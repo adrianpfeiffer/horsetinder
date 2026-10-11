@@ -65,4 +65,12 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    /**
+     * Count the matches of this user's horses.
+     */
+    public function matchCount(): int
+    {
+        return Like::matched()->whereIn('horse_id', $this->horses()->select('id'))->count();
+    }
 }
