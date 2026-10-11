@@ -7,7 +7,7 @@ it('shows the newest active horses', function () {
     Horse::factory()->create(['name' => 'Ghost', 'is_active' => false]);
     Horse::factory(3)->sequence(['name' => 'Spirit'], ['name' => 'Luna'], ['name' => 'Storm'])->create();
 
-    $response = $this->get(route('welcome'));
+    $response = $this->get(route('home'));
 
     $response->assertOk()
         ->assertSee('Neigh')
