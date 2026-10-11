@@ -19,7 +19,7 @@ php artisan storage:link
 ```
 
 - The app uses SQLite. `migrate:fresh` creates `database/database.sqlite` if it doesn't exist.
-- `storage:link` makes uploaded horse photos visible in the browser. The seeded horses have no photos.
+- `storage:link` makes the horse photos visible in the browser. Every seeded horse gets a photo from `database/seeders/photos/`; without the link, horses show a 🐴 placeholder instead.
 - Serve it with Laravel Herd, or run `php artisan serve` and open http://localhost:8000.
 
 ## Logging in
