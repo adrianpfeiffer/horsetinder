@@ -7,6 +7,16 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if (session('status'))
+                <p class="mb-6 rounded-md bg-green-50 p-4 text-sm text-green-800">{{ session('status') }}</p>
+            @endif
+
+            <div class="mb-6 flex justify-end">
+                <a href="{{ route('my.horses.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                    Add horse
+                </a>
+            </div>
+
             @if ($horses->isEmpty())
                 <p class="text-gray-600">You don't have any horses yet.</p>
             @else
