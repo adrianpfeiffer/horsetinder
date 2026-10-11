@@ -4,6 +4,7 @@ use App\Http\Controllers\BreedController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\Userzone\DashboardController;
 use App\Http\Controllers\Userzone\LikeController;
+use App\Http\Controllers\Userzone\MatchController;
 use App\Http\Controllers\Userzone\MyHorseController;
 use App\Http\Controllers\Userzone\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -42,6 +43,9 @@ Route::middleware('auth')->group(function () {
     // For liking other horses
     Route::post('/horses/{horse}/likes', [LikeController::class, 'store'])->name('likes.store');
     Route::delete('/likes/{like}', [LikeController::class, 'destroy'])->name('likes.destroy');
+
+    // For the matches of the user's horses
+    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
 
     // For the user's profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

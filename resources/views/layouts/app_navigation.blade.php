@@ -25,6 +25,9 @@
                         <x-breeze.nav-link :href="route('my.horses.index')" :active="request()->routeIs('my.horses.*')">
                             My horses
                         </x-breeze.nav-link>
+                        <x-breeze.nav-link :href="route('matches.index')" :active="request()->routeIs('matches.*')">
+                            Matches
+                        </x-breeze.nav-link>
                     @endauth
                 </div>
             </div>
@@ -98,6 +101,9 @@ Log Out
                 </x-breeze.responsive-nav-link>
                 <x-breeze.responsive-nav-link :href="route('my.horses.index')" :active="request()->routeIs('my.horses.*')">
                     My horses
+                </x-breeze.responsive-nav-link>
+                <x-breeze.responsive-nav-link :href="route('matches.index')" :active="request()->routeIs('matches.*')">
+                    Matches
                 </x-breeze.responsive-nav-link>
             @endauth
         </div>
