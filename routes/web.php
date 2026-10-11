@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\BreedController as AdminBreedController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\HorseController as AdminHorseController;
@@ -22,6 +23,7 @@ Route::get('/horses', [HorseController::class, 'index'])->name('horses.index');
 Route::get('/horses/{horse}', [HorseController::class, 'show'])->name('horses.show');
 Route::get('/breeds', [BreedController::class, 'index'])->name('breeds.index');
 Route::get('/breeds/{breed}', [BreedController::class, 'show'])->name('breeds.show');
+Route::get('/about', AboutController::class)->name('about');
 
 /*
  * Authentication routes
