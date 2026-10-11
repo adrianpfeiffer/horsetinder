@@ -2,6 +2,7 @@
 
 use App\Models\Breed;
 use App\Models\Horse;
+use App\Models\Like;
 use App\Models\User;
 
 describe('index', function () {
@@ -102,5 +103,95 @@ describe('store', function () {
             'discipline' => 'The selected discipline is invalid.',
         ]);
         expect(Horse::count())->toBe(0);
+    });
+});
+
+describe('edit', function () {
+    it('shows the form filled in with the horse', function () {
+        $horse = Horse::factory()->create(['name' => 'Spirit', 'city' => 'Brussels']);
+
+        $response = $this->actingAs($horse->owner)->get(route('my.horses.edit', $horse));
+
+        $response->assertOk()->assertSee('value="Spirit"', false)->assertSee('value="Brussels"', false);
+    });
+
+    it('forbids editing a horse of another owner', function () {
+        $horse = Horse::factory()->create();
+
+        $response = $this->actingAs(User::factory()->create())->get(route('my.horses.edit', $horse));
+
+        $response->assertForbidden();
+    });
+});
+
+describe('update', function () {
+    it('saves the changes, including hiding the horse', function () {
+        $horse = Horse::factory()->create(['name' => 'Spirit']);
+        $breed = Breed::factory()->create();
+
+        $response = $this->actingAs($horse->owner)->put(route('my.horses.update', $horse), [
+            'name' => 'Storm',
+            'breed_id' => $breed->id,
+            'gender' => 'gelding',
+            'birth_date' => '2015-03-10',
+            'discipline' => 'dressage',
+            'city' => 'Ghent',
+            'bio' => 'Calm and kind.',
+            'is_active' => '0',
+        ]);
+
+        $response->assertRedirect(route('my.horses.index'))->assertSessionHas('status', 'Storm was updated.');
+        expect($horse->fresh())
+            ->name->toBe('Storm')
+            ->breed_id->toBe($breed->id)
+            ->city->toBe('Ghent')
+            ->is_active->toBeFalse();
+    });
+
+    it('rejects invalid input and keeps the horse unchanged', function () {
+        $horse = Horse::factory()->create(['name' => 'Spirit']);
+
+        $response = $this->actingAs($horse->owner)->put(route('my.horses.update', $horse), ['name' => '']);
+
+        $response->assertSessionHasErrors(['name' => 'The name field is required.']);
+        expect($horse->fresh()->name)->toBe('Spirit');
+    });
+
+    it('forbids updating a horse of another owner', function () {
+        $horse = Horse::factory()->create(['name' => 'Spirit']);
+
+        $response = $this->actingAs(User::factory()->create())->put(route('my.horses.update', $horse), [
+            'name' => 'Stolen',
+            'breed_id' => $horse->breed_id,
+            'gender' => $horse->gender,
+            'birth_date' => '2015-03-10',
+            'discipline' => $horse->discipline,
+            'city' => $horse->city,
+        ]);
+
+        $response->assertForbidden();
+        expect($horse->fresh()->name)->toBe('Spirit');
+    });
+});
+
+describe('destroy', function () {
+    it('deletes the horse and its likes', function () {
+        $horse = Horse::factory()->create(['name' => 'Spirit']);
+        $like = Like::factory()->for($horse, 'horse')->create();
+
+        $response = $this->actingAs($horse->owner)->delete(route('my.horses.destroy', $horse));
+
+        $response->assertRedirect(route('my.horses.index'))->assertSessionHas('status', 'Spirit was deleted.');
+        $this->assertModelMissing($horse);
+        $this->assertModelMissing($like);
+    });
+
+    it('forbids deleting a horse of another owner', function () {
+        $horse = Horse::factory()->create();
+
+        $response = $this->actingAs(User::factory()->create())->delete(route('my.horses.destroy', $horse));
+
+        $response->assertForbidden();
+        $this->assertModelExists($horse);
     });
 });
