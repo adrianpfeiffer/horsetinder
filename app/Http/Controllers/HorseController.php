@@ -22,7 +22,8 @@ class HorseController extends Controller
     }
 
     /**
-     * Show the profile of one horse. Hidden horses are only visible to their owner.
+     * Show the profile of one horse, with which of the visitor's horses like it.
+     * Hidden horses are only visible to their owner.
      */
     public function show(Request $request, Horse $horse): View
     {
@@ -32,6 +33,11 @@ class HorseController extends Controller
 
         $horse->load('breed', 'owner');
 
-        return view('horses.show', compact('horse'));
+        $myHorses = $request->user()?->horses()->orderBy('name')->get() ?? collect();
+        $likerIds = $horse->receivedLikes()->whereIn('horse_id', $myHorses->pluck('id'))->pluck('horse_id');
+        $myHorsesThatLike = $myHorses->whereIn('id', $likerIds);
+        $myHorsesThatCanLike = $myHorses->whereNotIn('id', $likerIds);
+
+        return view('horses.show', compact('horse', 'myHorses', 'myHorsesThatLike', 'myHorsesThatCanLike'));
     }
 }

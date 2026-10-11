@@ -3,6 +3,7 @@
 use App\Http\Controllers\BreedController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\Userzone\DashboardController;
+use App\Http\Controllers\Userzone\LikeController;
 use App\Http\Controllers\Userzone\MyHorseController;
 use App\Http\Controllers\Userzone\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -37,6 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/my/horses/{horse}/edit', [MyHorseController::class, 'edit'])->name('my.horses.edit');
     Route::put('/my/horses/{horse}', [MyHorseController::class, 'update'])->name('my.horses.update');
     Route::delete('/my/horses/{horse}', [MyHorseController::class, 'destroy'])->name('my.horses.destroy');
+
+    // For liking other horses
+    Route::post('/horses/{horse}/likes', [LikeController::class, 'store'])->name('likes.store');
 
     // For the user's profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
