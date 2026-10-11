@@ -8,7 +8,9 @@ use App\Models\Like;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\File;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,6 +44,8 @@ class DatabaseSeeder extends Seeder
 
         $horses = Horse::all();
 
+        $this->givePhotos($horses);
+
         foreach ($horses as $horse) {
             $targets = $horses->except($horse->id)->random(fake()->numberBetween(0, 4));
 
@@ -59,6 +63,24 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->seedAdminActivity($admin, $horses);
+    }
+
+    /**
+     * Give every horse one of the photos in database/seeders/photos, removing photos of earlier seeds.
+     *
+     * @param  Collection<int, Horse>  $horses
+     */
+    private function givePhotos(Collection $horses): void
+    {
+        Storage::disk('public')->deleteDirectory('horses');
+
+        $photos = collect(glob(database_path('seeders/photos/*.jpg')))->shuffle()->values();
+
+        foreach ($horses->values() as $index => $horse) {
+            $photo = $photos[$index % $photos->count()];
+
+            $horse->update(['photo_path' => Storage::disk('public')->putFile('horses', new File($photo))]);
+        }
     }
 
     /**

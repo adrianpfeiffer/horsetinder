@@ -1,12 +1,15 @@
 <?php
 
 use App\Models\Breed;
+use App\Models\Horse;
 use App\Models\Like;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
+    Storage::fake('public');
     $this->seed(DatabaseSeeder::class);
 });
 
@@ -54,4 +57,11 @@ it('gives the admin horses, a match and a like to answer', function () {
     expect($adminHorseIds)->toHaveCount(2)
         ->and($matches)->toBeGreaterThanOrEqual(1)
         ->and($unansweredLikes)->toBeGreaterThanOrEqual(1);
+});
+
+it('gives every horse a photo from the seeder photos', function () {
+    $paths = Horse::pluck('photo_path');
+
+    expect($paths)->each->toStartWith('horses/');
+    $paths->each(fn ($path) => Storage::disk('public')->assertExists($path));
 });
