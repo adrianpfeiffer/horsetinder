@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BreedController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\Userzone\DashboardController;
 use App\Http\Controllers\Userzone\ProfileController;
@@ -13,6 +14,8 @@ Route::get('/', WelcomeController::class)->name('welcome');
 
 Route::get('/horses', [HorseController::class, 'index'])->name('horses.index');
 Route::get('/horses/{horse}', [HorseController::class, 'show'])->name('horses.show');
+Route::get('/breeds', [BreedController::class, 'index'])->name('breeds.index');
+Route::get('/breeds/{breed}', [BreedController::class, 'show'])->name('breeds.show');
 
 /*
  * Authentication routes
