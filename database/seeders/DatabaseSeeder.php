@@ -44,7 +44,13 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // TODO: seed mutual likes so there are matches to show
+        foreach (range(1, 5) as $i) {
+            $horse = $horses->random();
+            $target = $horses->where('user_id', '!=', $horse->user_id)->random();
+
+            $this->like($horse, $target);
+            $this->like($target, $horse);
+        }
     }
 
     /**
