@@ -18,6 +18,9 @@
                     <x-breeze.nav-link :href="route('breeds.index')" :active="request()->routeIs('breeds.*')">
                         Breeds
                     </x-breeze.nav-link>
+                    <x-breeze.nav-link :href="route('about')" :active="request()->routeIs('about')">
+                        About
+                    </x-breeze.nav-link>
                     @auth
                         <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             Dashboard
@@ -99,6 +102,9 @@ Log Out
             </x-breeze.responsive-nav-link>
             <x-breeze.responsive-nav-link :href="route('breeds.index')" :active="request()->routeIs('breeds.*')">
                 Breeds
+            </x-breeze.responsive-nav-link>
+            <x-breeze.responsive-nav-link :href="route('about')" :active="request()->routeIs('about')">
+                About
             </x-breeze.responsive-nav-link>
             @auth
                 <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
