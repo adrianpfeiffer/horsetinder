@@ -30,6 +30,15 @@ describe('show', function () {
         $response->assertOk()->assertSee('Spirit')->assertSee($horse->breed->name);
     });
 
+    it('links back to the page the visitor came from', function () {
+        $horse = Horse::factory()->create();
+        $previousPage = route('horses.index', ['page' => 3]);
+
+        $response = $this->from($previousPage)->get(route('horses.show', $horse));
+
+        $response->assertOk()->assertSee('href="'.$previousPage.'"', false);
+    });
+
     it('returns 404 for a hidden horse of another owner', function () {
         $horse = Horse::factory()->create(['is_active' => false]);
 

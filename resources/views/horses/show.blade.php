@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('horses.index') }}" class="mt-6 inline-block text-sm text-indigo-600 hover:underline">← Back to all horses</a>
+            <a href="{{ url()->previous(route('horses.index')) }}" class="mt-6 inline-block text-sm text-indigo-600 hover:underline">← Back</a>
         </div>
     </div>
 </x-app-layout>
