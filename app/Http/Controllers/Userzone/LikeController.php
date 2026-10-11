@@ -43,8 +43,14 @@ class LikeController extends Controller
 
         $isMatch = $horse->givenLikes()->where('target_horse_id', $validated['horse_id'])->exists();
 
+        if ($isMatch) {
+            return redirect()->route('horses.show', $horse)
+                ->with('status', "It's a match with {$horse->name}! 🎉")
+                ->with('matched_horse_id', (int) $validated['horse_id']);
+        }
+
         return redirect()->route('horses.show', $horse)
-            ->with('status', $isMatch ? "It's a match with {$horse->name}! 🎉" : "You liked {$horse->name}.");
+            ->with('status', "You liked {$horse->name}.");
     }
 
     /**

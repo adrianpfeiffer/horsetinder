@@ -80,6 +80,28 @@ describe('show', function () {
         $response->assertOk()->assertSee('This horse is hidden');
     });
 
+    it('celebrates a fresh match with a link to the contact', function () {
+        $myHorse = Horse::factory()->create(['name' => 'Bojack']);
+        $target = Horse::factory()->create(['name' => 'Luna']);
+
+        $response = $this->actingAs($myHorse->owner)
+            ->withSession(['matched_horse_id' => $myHorse->id])
+            ->get(route('horses.show', $target));
+
+        $response->assertOk()
+            ->assertSee("It's a match!", false)
+            ->assertSee(route('matches.index').'#match-'.$myHorse->id.'-'.$target->id, false);
+    });
+
+    it('does not celebrate without a fresh match', function () {
+        $myHorse = Horse::factory()->create();
+        $target = Horse::factory()->create();
+
+        $response = $this->actingAs($myHorse->owner)->get(route('horses.show', $target));
+
+        $response->assertOk()->assertDontSee("It's a match!", false);
+    });
+
     it('returns 404 for a hidden horse of another owner', function () {
         $horse = Horse::factory()->create(['is_active' => false]);
 

@@ -1,3 +1,7 @@
+@php
+    $matchCount = Auth::user()?->matchCount() ?? 0;
+@endphp
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100" >
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,6 +31,9 @@
                         </x-breeze.nav-link>
                         <x-breeze.nav-link :href="route('matches.index')" :active="request()->routeIs('matches.*')">
                             Matches
+                            @if ($matchCount > 0)
+                                <span class="ms-2 rounded-full bg-pink-600 px-2 py-0.5 text-xs font-semibold text-white">{{ $matchCount }}</span>
+                            @endif
                         </x-breeze.nav-link>
                         @if (Auth::user()->isAdmin())
                             <x-breeze.nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
@@ -109,6 +116,9 @@ Log Out
                 </x-breeze.responsive-nav-link>
                 <x-breeze.responsive-nav-link :href="route('matches.index')" :active="request()->routeIs('matches.*')">
                     Matches
+                    @if ($matchCount > 0)
+                        <span class="ms-2 rounded-full bg-pink-600 px-2 py-0.5 text-xs font-semibold text-white">{{ $matchCount }}</span>
+                    @endif
                 </x-breeze.responsive-nav-link>
                 @if (Auth::user()->isAdmin())
                     <x-breeze.responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">

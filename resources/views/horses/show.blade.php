@@ -1,4 +1,6 @@
 @php
+    $matchedHorse = session('matched_horse_id') ? $myHorses->firstWhere('id', session('matched_horse_id')) : null;
+
     $backUrl = url()->previous(route('horses.index'));
 
     if ($backUrl === url()->current()) {
@@ -109,4 +111,8 @@
             <a href="{{ $backUrl }}" class="mt-6 inline-block text-sm text-indigo-600 hover:underline">← Back</a>
         </div>
     </div>
+
+    @if ($matchedHorse)
+        <x-match-overlay :my-horse="$matchedHorse" :their-horse="$horse" />
+    @endif
 </x-app-layout>
