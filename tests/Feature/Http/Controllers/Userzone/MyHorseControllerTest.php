@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Breed;
 use App\Models\Horse;
 use App\Models\User;
 
@@ -22,5 +23,84 @@ describe('index', function () {
             ->assertSee('Spirit')
             ->assertSee('Ghost')
             ->assertDontSee('Stranger');
+    });
+});
+
+describe('create', function () {
+    it('shows the form with the breeds to choose from', function () {
+        Breed::factory()->create(['name' => 'Friesian']);
+
+        $response = $this->actingAs(User::factory()->create())->get(route('my.horses.create'));
+
+        $response->assertOk()->assertSee('Friesian');
+    });
+});
+
+describe('store', function () {
+    it('redirects guests to the login page', function () {
+        $response = $this->post(route('my.horses.store'), []);
+
+        $response->assertRedirect(route('login'));
+        expect(Horse::count())->toBe(0);
+    });
+
+    it('adds a horse owned by the logged-in user', function () {
+        $owner = User::factory()->create();
+        $breed = Breed::factory()->create();
+
+        $response = $this->actingAs($owner)->post(route('my.horses.store'), [
+            'name' => 'Spirit',
+            'breed_id' => $breed->id,
+            'gender' => 'mare',
+            'birth_date' => '2018-05-01',
+            'discipline' => 'jumping',
+            'city' => 'Brussels',
+            'bio' => 'Loves apples.',
+            'user_id' => User::factory()->create()->id,
+        ]);
+
+        $response->assertRedirect(route('my.horses.index'))->assertSessionHas('status', 'Spirit was added.');
+        $this->assertDatabaseHas('horses', [
+            'user_id' => $owner->id,
+            'breed_id' => $breed->id,
+            'name' => 'Spirit',
+            'gender' => 'mare',
+            'discipline' => 'jumping',
+            'city' => 'Brussels',
+            'is_active' => true,
+        ]);
+    });
+
+    it('requires all fields except the bio', function () {
+        $response = $this->actingAs(User::factory()->create())->post(route('my.horses.store'), []);
+
+        $response->assertSessionHasErrors([
+            'name' => 'The name field is required.',
+            'breed_id' => 'The breed field is required.',
+            'gender' => 'The gender field is required.',
+            'birth_date' => 'The birth date field is required.',
+            'discipline' => 'The discipline field is required.',
+            'city' => 'The city field is required.',
+        ])->assertSessionDoesntHaveErrors('bio');
+        expect(Horse::count())->toBe(0);
+    });
+
+    it('rejects values that are not allowed', function () {
+        $response = $this->actingAs(User::factory()->create())->post(route('my.horses.store'), [
+            'name' => 'Spirit',
+            'breed_id' => 999,
+            'gender' => 'unicorn',
+            'birth_date' => now()->addDay()->toDateString(),
+            'discipline' => 'racing',
+            'city' => 'Brussels',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'breed_id' => 'The selected breed is invalid.',
+            'gender' => 'The selected gender is invalid.',
+            'birth_date' => 'The birth date field must be a date before or equal to today.',
+            'discipline' => 'The selected discipline is invalid.',
+        ]);
+        expect(Horse::count())->toBe(0);
     });
 });

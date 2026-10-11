@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
 
     // For the user's own horses
     Route::get('/my/horses', [MyHorseController::class, 'index'])->name('my.horses.index');
+    Route::get('/my/horses/create', [MyHorseController::class, 'create'])->name('my.horses.create');
+    Route::post('/my/horses', [MyHorseController::class, 'store'])->name('my.horses.store');
 
     // For the user's profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
