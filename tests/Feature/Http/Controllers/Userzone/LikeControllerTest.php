@@ -76,3 +76,27 @@ describe('store', function () {
         expect(Like::count())->toBe(0);
     });
 });
+
+describe('destroy', function () {
+    it('lets me undo a like my horse gave', function () {
+        $like = Like::factory()
+            ->for(Horse::factory()->create(['name' => 'Bojack']), 'horse')
+            ->for(Horse::factory()->create(['name' => 'Luna']), 'targetHorse')
+            ->create();
+
+        $response = $this->actingAs($like->horse->owner)->delete(route('likes.destroy', $like));
+
+        $response->assertRedirect(route('horses.show', $like->target_horse_id))
+            ->assertSessionHas('status', 'Bojack no longer likes Luna.');
+        $this->assertModelMissing($like);
+    });
+
+    it('forbids undoing a like given by another owner\'s horse', function () {
+        $like = Like::factory()->create();
+
+        $response = $this->actingAs($like->targetHorse->owner)->delete(route('likes.destroy', $like));
+
+        $response->assertForbidden();
+        $this->assertModelExists($like);
+    });
+});
