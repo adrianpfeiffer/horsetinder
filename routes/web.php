@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BreedController as AdminBreedController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\BreedController;
 use App\Http\Controllers\HorseController;
@@ -59,4 +60,5 @@ Route::middleware('auth')->group(function () {
  */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', AdminDashboardController::class)->name('dashboard');
+    Route::resource('breeds', AdminBreedController::class);
 });
