@@ -23,7 +23,9 @@
                     <dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
                         <div>
                             <dt class="text-gray-500">Breed</dt>
-                            <dd class="font-medium text-gray-900">{{ $horse->breed->name }}</dd>
+                            <dd class="font-medium text-gray-900">
+                                <a href="{{ route('breeds.show', $horse->breed) }}" class="text-indigo-600 hover:underline">{{ $horse->breed->name }}</a>
+                            </dd>
                         </div>
                         <div>
                             <dt class="text-gray-500">Age</dt>
