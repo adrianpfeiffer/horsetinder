@@ -8,6 +8,7 @@ use App\Models\Like;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,7 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->admin()->create([
+        $admin = User::factory()->admin()->create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
         ]);
@@ -33,6 +34,11 @@ class DatabaseSeeder extends Seeder
                 ->recycle($breeds)
                 ->create();
         }
+
+        Horse::factory(2)
+            ->for($admin, 'owner')
+            ->recycle($breeds)
+            ->create();
 
         $horses = Horse::all();
 
@@ -51,6 +57,27 @@ class DatabaseSeeder extends Seeder
             $this->like($horse, $target);
             $this->like($target, $horse);
         }
+
+        $this->seedAdminActivity($admin, $horses);
+    }
+
+    /**
+     * Give the admin, who evaluators log in as, a match and a like to answer.
+     *
+     * @param  Collection<int, Horse>  $horses
+     */
+    private function seedAdminActivity(User $admin, Collection $horses): void
+    {
+        $adminHorse = $admin->horses()->first();
+        $otherHorses = $horses->where('user_id', '!=', $admin->id)->shuffle();
+
+        $match = $otherHorses->first();
+        $this->like($adminHorse, $match);
+        $this->like($match, $adminHorse);
+
+        $alreadyLiked = Like::whereIn('horse_id', $admin->horses()->pluck('id'))->pluck('target_horse_id');
+        $admirer = $otherHorses->whereNotIn('id', $alreadyLiked)->first();
+        $this->like($admirer, $adminHorse);
     }
 
     /**

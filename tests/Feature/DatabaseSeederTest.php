@@ -41,3 +41,17 @@ it('creates mutual likes so there are matches to show', function () {
 
     expect($hasMatch)->toBeTrue();
 });
+
+it('gives the admin horses, a match and a like to answer', function () {
+    $admin = User::firstWhere('email', 'admin@admin.com');
+    $adminHorseIds = $admin->horses()->pluck('id');
+
+    $matches = Like::matched()->whereIn('horse_id', $adminHorseIds)->count();
+    $unansweredLikes = Like::whereIn('target_horse_id', $adminHorseIds)
+        ->whereNotIn('horse_id', Like::whereIn('horse_id', $adminHorseIds)->pluck('target_horse_id'))
+        ->count();
+
+    expect($adminHorseIds)->toHaveCount(2)
+        ->and($matches)->toBeGreaterThanOrEqual(1)
+        ->and($unansweredLikes)->toBeGreaterThanOrEqual(1);
+});
