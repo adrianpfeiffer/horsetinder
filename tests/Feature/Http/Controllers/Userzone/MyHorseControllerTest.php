@@ -4,6 +4,8 @@ use App\Models\Breed;
 use App\Models\Horse;
 use App\Models\Like;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 describe('index', function () {
     it('redirects guests to the login page', function () {
@@ -193,5 +195,76 @@ describe('destroy', function () {
 
         $response->assertForbidden();
         $this->assertModelExists($horse);
+    });
+});
+
+describe('photo', function () {
+    beforeEach(function () {
+        Storage::fake('public');
+    });
+
+    it('stores the uploaded photo when adding a horse', function () {
+        $owner = User::factory()->create();
+
+        $this->actingAs($owner)->post(route('my.horses.store'), [
+            'name' => 'Spirit',
+            'breed_id' => Breed::factory()->create()->id,
+            'gender' => 'mare',
+            'birth_date' => '2018-05-01',
+            'discipline' => 'jumping',
+            'city' => 'Brussels',
+            'photo' => UploadedFile::fake()->image('spirit.jpg'),
+        ]);
+
+        $horse = $owner->horses()->first();
+        expect($horse->photo_path)->toStartWith('horses/');
+        Storage::disk('public')->assertExists($horse->photo_path);
+    });
+
+    it('replaces the old photo file when uploading a new one', function () {
+        $oldPath = UploadedFile::fake()->image('old.jpg')->store('horses', 'public');
+        $horse = Horse::factory()->create(['photo_path' => $oldPath]);
+
+        $this->actingAs($horse->owner)->put(route('my.horses.update', $horse), [
+            'name' => $horse->name,
+            'breed_id' => $horse->breed_id,
+            'gender' => $horse->gender,
+            'birth_date' => '2015-03-10',
+            'discipline' => $horse->discipline,
+            'city' => $horse->city,
+            'photo' => UploadedFile::fake()->image('new.jpg'),
+        ]);
+
+        $newPath = $horse->fresh()->photo_path;
+        expect($newPath)->not->toBe($oldPath);
+        Storage::disk('public')->assertMissing($oldPath);
+        Storage::disk('public')->assertExists($newPath);
+    });
+
+    it('deletes the photo file together with the horse', function () {
+        $path = UploadedFile::fake()->image('spirit.jpg')->store('horses', 'public');
+        $horse = Horse::factory()->create(['photo_path' => $path]);
+
+        $this->actingAs($horse->owner)->delete(route('my.horses.destroy', $horse));
+
+        Storage::disk('public')->assertMissing($path);
+    });
+
+    it('rejects a file that is not an image', function () {
+        $response = $this->actingAs(User::factory()->create())->post(route('my.horses.store'), [
+            'photo' => UploadedFile::fake()->create('notes.pdf', 10, 'application/pdf'),
+        ]);
+
+        $response->assertSessionHasErrors(['photo' => 'The photo field must be an image.']);
+        expect(Storage::disk('public')->allFiles())->toBeEmpty();
+    });
+
+    it('rejects a photo larger than 5 MB', function () {
+        $response = $this->actingAs(User::factory()->create())->post(route('my.horses.store'), [
+            'photo' => UploadedFile::fake()->image('big.jpg')->size(5121),
+        ]);
+
+        $response->assertSessionHasErrors(['photo' => 'The photo field must not be greater than 5120 kilobytes.']);
+        expect(Storage::disk('public')->allFiles())->toBeEmpty();
     });
 });

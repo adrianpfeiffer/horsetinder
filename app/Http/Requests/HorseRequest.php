@@ -25,6 +25,7 @@ class HorseRequest extends FormRequest
             'city' => ['required', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['boolean'],
+            'photo' => ['nullable', 'image', 'max:5120'],
         ];
     }
 
