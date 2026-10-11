@@ -72,6 +72,14 @@ describe('show', function () {
         $response->assertOk()->assertSee('<a href="'.route('horses.index').'" class="mt-6', false);
     });
 
+    it('shows a hidden horse to admins', function () {
+        $horse = Horse::factory()->create(['is_active' => false]);
+
+        $response = $this->actingAs(User::factory()->admin()->create())->get(route('horses.show', $horse));
+
+        $response->assertOk()->assertSee('This horse is hidden');
+    });
+
     it('returns 404 for a hidden horse of another owner', function () {
         $horse = Horse::factory()->create(['is_active' => false]);
 

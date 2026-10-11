@@ -23,11 +23,11 @@ class HorseController extends Controller
 
     /**
      * Show the profile of one horse, with the likes it got from the visitor's horses.
-     * Hidden horses are only visible to their owner.
+     * Hidden horses are only visible to their owner and to admins.
      */
     public function show(Request $request, Horse $horse): View
     {
-        if (! $horse->is_active && $horse->user_id !== $request->user()?->id) {
+        if (! $horse->is_active && $horse->user_id !== $request->user()?->id && ! $request->user()?->isAdmin()) {
             abort(404);
         }
 

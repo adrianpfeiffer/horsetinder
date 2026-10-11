@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Horse extends Model
 {
@@ -85,5 +86,15 @@ class Horse extends Model
     public function receivedLikes(): HasMany
     {
         return $this->hasMany(Like::class, 'target_horse_id');
+    }
+
+    /**
+     * Remove the horse's photo file from storage, if it has one.
+     */
+    public function deletePhoto(): void
+    {
+        if ($this->photo_path) {
+            Storage::disk('public')->delete($this->photo_path);
+        }
     }
 }
