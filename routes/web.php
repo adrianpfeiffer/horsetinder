@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HorseController;
 use App\Http\Controllers\Userzone\DashboardController;
 use App\Http\Controllers\Userzone\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -10,7 +11,8 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/', WelcomeController::class)->name('welcome');
 
-// Todo: add your public routes here
+Route::get('/horses', [HorseController::class, 'index'])->name('horses.index');
+Route::get('/horses/{horse}', [HorseController::class, 'show'])->name('horses.show');
 
 /*
  * Authentication routes
