@@ -15,11 +15,7 @@ class MatchController extends Controller
     public function index(Request $request): View
     {
         $matches = Like::whereIn('horse_id', $request->user()->horses()->pluck('id'))
-            ->whereExists(function ($query) {
-                $query->from('likes as like_back')
-                    ->whereColumn('like_back.horse_id', 'likes.target_horse_id')
-                    ->whereColumn('like_back.target_horse_id', 'likes.horse_id');
-            })
+            ->matched()
             ->with('horse', 'targetHorse.owner')
             ->latest()
             ->get();
