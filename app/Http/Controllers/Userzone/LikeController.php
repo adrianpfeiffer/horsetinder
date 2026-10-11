@@ -46,4 +46,19 @@ class LikeController extends Controller
         return redirect()->route('horses.show', $horse)
             ->with('status', $isMatch ? "It's a match with {$horse->name}! 🎉" : "You liked {$horse->name}.");
     }
+
+    /**
+     * Undo a like that one of the logged-in user's horses gave.
+     */
+    public function destroy(Request $request, Like $like): RedirectResponse
+    {
+        if ($like->horse->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        $like->delete();
+
+        return redirect()->route('horses.show', $like->target_horse_id)
+            ->with('status', "{$like->horse->name} no longer likes {$like->targetHorse->name}.");
+    }
 }

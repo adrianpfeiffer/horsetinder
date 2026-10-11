@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
     // For liking other horses
     Route::post('/horses/{horse}/likes', [LikeController::class, 'store'])->name('likes.store');
+    Route::delete('/likes/{like}', [LikeController::class, 'destroy'])->name('likes.destroy');
 
     // For the user's profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

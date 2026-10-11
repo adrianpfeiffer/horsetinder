@@ -74,8 +74,13 @@
                                     <a href="{{ route('my.horses.create') }}" class="font-medium text-indigo-600 hover:underline">Add a horse</a> first, then you can like {{ $horse->name }}.
                                 </p>
                             @else
-                                @foreach ($myHorsesThatLike as $myHorse)
-                                    <p class="mb-2 text-sm text-pink-700">❤️ {{ $myHorse->name }} likes {{ $horse->name }}</p>
+                                @foreach ($myLikes as $like)
+                                    <form method="POST" action="{{ route('likes.destroy', $like) }}" class="mb-2 flex items-center justify-between gap-2 text-sm">
+                                        @csrf
+                                        @method('DELETE')
+                                        <span class="text-pink-700">❤️ {{ $like->horse->name }} likes {{ $horse->name }}</span>
+                                        <button type="submit" class="text-gray-500 hover:text-red-600 hover:underline">Undo</button>
+                                    </form>
                                 @endforeach
 
                                 @if ($myHorsesThatCanLike->isNotEmpty())

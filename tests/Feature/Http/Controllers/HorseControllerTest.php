@@ -51,6 +51,7 @@ describe('show', function () {
 
         $response->assertOk()
             ->assertSee('Bojack likes Luna')
+            ->assertSee('action="'.route('likes.destroy', $alreadyLikes->givenLikes()->first()).'"', false)
             ->assertSee('<option value="'.$owner->horses()->firstWhere('name', 'Katarina')->id.'"', false)
             ->assertDontSee('<option value="'.$alreadyLikes->id.'"', false);
     });
